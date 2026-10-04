@@ -59,6 +59,9 @@ portfolio project showing secure design and test automation.
 ## Status (2026-10-04)
 
 Done: schema + RLS (applied to Supabase), decision log D-001…D-020, secret scanning, app
-skeleton, build CI, Vercel deployment.
-Next: Supabase auth redirect URLs → sign-up / sign-in screens (email + password, D-019) →
+skeleton, build CI, Vercel deployment, Supabase Auth Site URL set to the production URL.
+Pending setup: add Redirect URLs in Supabase (previews `https://two-cents-*-amitamitay.vercel.app/**`,
+local `http://localhost:5173/**`) when needed; confirm GitHub push protection is enabled
+(Amit, repo Settings) before any real secret is handled.
+Next: sign-up / sign-in screens (email + password, D-019) →
 create couple / invite partner → expense entry screen → monthly list.
