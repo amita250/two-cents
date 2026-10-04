@@ -172,3 +172,16 @@ are written in Python with pytest. Only unit tests of frontend code stay in Type
 **Why:** Tests exercise the system from the outside, like a user or an attacker, so they do not
 need to share the app's language. Python is the test owner's strongest language.
 **Trade-off:** Two toolchains in the repo and in CI (Node + Python) — common in real teams.
+
+## D-019 · Sign-in with email + password for the MVP (2026-10-04)
+
+**Decision:** Email + password via Supabase Auth. Google sign-in may be added later.
+Considered: magic links, Google OAuth.
+**Why:**
+- Simplest flow; works the same in the browser and in the installed PWA.
+- Magic links: the built-in email service on the free plan is heavily rate-limited, and the
+  link opens in the browser instead of the installed app.
+- Google OAuth: needs a Google Cloud project and more secrets to manage.
+- Testability: automated tests must sign in as several users (both partners, an attacker
+  from another couple). With passwords that is one line of code; with links or OAuth the
+  tests must work around the sign-in flow.
