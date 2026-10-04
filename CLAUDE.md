@@ -39,7 +39,8 @@ portfolio project showing secure design and test automation.
 - `app/` — React + TypeScript + Vite SPA, installed as a PWA, Hebrew RTL UI.
   Talks to Supabase directly with the public anon/publishable key only.
   **Never** use the service_role / secret key in the app.
-- Hosting: Vercel, root directory `app/`. Production: https://two-cents-alpha.vercel.app Env vars `VITE_SUPABASE_URL`,
+- Hosting: Vercel, root directory `app/`. Production: https://two-cents-alpha.vercel.app.
+  Env vars `VITE_SUPABASE_URL`,
   `VITE_SUPABASE_ANON_KEY` are set in Vercel, never in git.
 - Tests (planned): Python + pytest — database, API/security (supabase-py), E2E
   (Playwright for Python). Frontend unit tests in TypeScript. Tests never run against the
