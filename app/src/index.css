@@ -29,3 +29,40 @@ body { margin: 0; }
 h1 { color: var(--accent); margin: 0 0 8px; }
 .warning { color: var(--warning); }
 code { direction: ltr; unicode-bidi: embed; }
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.auth-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.9rem;
+}
+
+.auth-form input {
+  font-size: 1rem;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.auth-form button {
+  font-size: 1rem;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--bg);
+  cursor: pointer;
+}
+
+.auth-form button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}

@@ -201,3 +201,38 @@ Considered: Netlify, Cloudflare.
 host. The app is static, so moving is cheap.
 **Config:** Supabase URL and public key are set as Vercel environment variables, never in git.
 `app/vercel.json` routes every path to the SPA.
+
+## D-021 · Client-side routing with react-router (2026-10-04)
+
+**Decision:** Add `react-router` and give every top-level screen a real URL from the start
+(e.g. `/sign-in`, `/sign-up`, `/invite/:code`, `/auth/callback`), instead of switching
+screens with conditional rendering over app state. Considered: no router, just React state.
+**Why:**
+- The partner invite (D-013) is a link that must open a specific screen directly — a deep
+  link, not reachable by navigating the UI from scratch.
+- Supabase Auth email-confirmation redirects to a URL; that URL needs a route to land on.
+- Mobile back button/gesture should move between app screens, not exit the installed PWA —
+  real browser history entries give this for free.
+- E2E tests (Playwright, D-018) can open any screen directly by URL instead of driving the
+  UI through every prior step first.
+**Trade-off:** More upfront setup than conditional rendering, and routes/guards (e.g.
+"redirect to `/sign-in` if signed out") must be kept in sync as screens are added.
+**Note:** `app/vercel.json` already rewrites every path to `index.html` (D-020), which is
+required for client-side routes to survive a refresh or a direct deep link.
+
+## D-022 · Sign-up never reveals whether an email is already registered (2026-10-04)
+
+**Decision:** The sign-up screen shows the identical "check your email" message whether
+the email is brand new or already has an account — the "User already registered" error
+from Supabase Auth is caught and treated the same as a successful signup, never shown to
+the user.
+**Why:** Same principle as the invite codes in D-013: a response that differs based on
+whether an email exists lets an attacker enumerate registered users. The error message
+Supabase returns by default does exactly that, so the app must not surface it.
+**Requires:** Supabase project setting *Confirm email* must stay **on** (Authentication →
+Providers → Email). Without it, a brand-new signup gets an instant session and redirects
+immediately, while an "already registered" attempt does not — that difference in behavior
+would itself leak the same information the hidden error message was supposed to hide.
+**Trade-off:** A user who already has an account and tries to sign up again sees "check
+your email" instead of a direct "you already have an account, sign in" hint — slightly
+less helpful UX, accepted for the security property.

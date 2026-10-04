@@ -13,9 +13,9 @@ portfolio project showing secure design and test automation.
 - **Every decision is recorded** in `docs/decisions.md` (append-only, numbered `D-xxx`,
   format: Decision · Why · Trade-off). Reference decision numbers in code comments where
   the code embodies one.
-- **Talk to Amit in Hebrew, addressing her in the feminine.** Code, comments, commits and
-  docs are in English (public portfolio). Hebrew replies: avoid starting lines with
-  English words, code or symbols — it breaks right-to-left display.
+- **Talk to Amit in English.** Code, comments, commits and docs are in English too
+  (public portfolio). Note that the app's own UI is Hebrew and RTL — that is a product
+  decision, not a language for our conversation.
 - Amit is a QA automation engineer (Python is her strongest language). She wants to
   understand code she did not write: explain what changed and why, at the level of the
   decision, not line by line.
@@ -58,10 +58,12 @@ portfolio project showing secure design and test automation.
 
 ## Status (2026-10-04)
 
-Done: schema + RLS (applied to Supabase), decision log D-001…D-020, secret scanning, app
-skeleton, build CI, Vercel deployment, Supabase Auth Site URL set to the production URL.
+Done: schema + RLS (applied to Supabase), decision log D-001…D-022, secret scanning, app
+skeleton, build CI, Vercel deployment, Supabase Auth Site URL set to the production URL,
+dependencies installed (`app/`, incl. `react-router`, D-021), `app/.env.local` filled in with
+real project credentials, sign-up / sign-in screens (D-019, routed with react-router D-021,
+enumeration-safe sign-up D-022) working end-to-end against the real Supabase project.
 Pending setup: add Redirect URLs in Supabase (previews `https://two-cents-*-amitamitay.vercel.app/**`,
 local `http://localhost:5173/**`) when needed; confirm GitHub push protection is enabled
 (Amit, repo Settings) before any real secret is handled.
-Next: sign-up / sign-in screens (email + password, D-019) →
-create couple / invite partner → expense entry screen → monthly list.
+Next: create couple / invite partner (D-013) → expense entry screen → monthly list.
