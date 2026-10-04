@@ -139,3 +139,16 @@ with push protection is enabled on the repo.
 **Why:** A secret committed once stays in git history even after deletion. Prevention is the
 only reliable control. Note: the Supabase *anon* key is designed to be public (RLS is what
 protects data); the *service role* key bypasses RLS and must never leave the server.
+
+## D-016 · Supabase project security settings (2026-10-04)
+
+**Decision:** Data API enabled; *automatically expose new tables* **off**; *automatic RLS*
+**on**. Project hosted in West EU (Ireland). GitHub integration not connected for now.
+**Why:**
+- Auto-expose grants API access to every new table by default. Our migrations follow least
+  privilege: revoke everything, then grant only the operations and columns needed.
+- Automatic RLS is a safety net: our migrations already enable RLS explicitly on every table,
+  but a future table can never be created without it.
+- Europe is the closest region to Israel (lower latency).
+- The GitHub integration would auto-deploy schema changes from the repo and gives Supabase
+  access to it — to be decided together with the migration workflow.
