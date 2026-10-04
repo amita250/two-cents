@@ -1,0 +1,26 @@
+# Secrets — never commit (see docs/decisions.md D-015)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Dependencies & builds
+node_modules/
+.next/
+dist/
+build/
+coverage/
+
+# Supabase local
+supabase/.branches/
+supabase/.temp/
+
+# Test artifacts
+playwright-report/
+test-results/
+
+# OS / editors
+.DS_Store
+.vscode/
+.idea/
