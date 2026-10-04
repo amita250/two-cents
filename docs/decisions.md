@@ -185,3 +185,19 @@ Considered: magic links, Google OAuth.
 - Testability: automated tests must sign in as several users (both partners, an attacker
   from another couple). With passwords that is one line of code; with links or OAuth the
   tests must work around the sign-in flow.
+
+## D-020 · Hosting on Vercel (2026-10-04)
+
+**Decision:** Vercel (Hobby plan), deploying from GitHub; project root is `app/`.
+Considered: Netlify, Cloudflare.
+**Why:**
+- Free for personal, non-commercial use (our case), with no limit on the number of deployments.
+- Automatic preview deployment for every branch / pull request: E2E tests can run against
+  a change before it reaches the version we use daily.
+- Netlify's free plan (credit-based since 2025) allows roughly 20 production deploys a month
+  and pauses the site when credits run out. Cloudflare Pages is in maintenance mode, and
+  Workers needs manual setup for previews.
+**Trade-off:** If TwoCents ever becomes commercial, it must move to a paid plan or another
+host. The app is static, so moving is cheap.
+**Config:** Supabase URL and public key are set as Vercel environment variables, never in git.
+`app/vercel.json` routes every path to the SPA.
