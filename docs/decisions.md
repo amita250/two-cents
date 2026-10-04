@@ -133,7 +133,7 @@ their entries.
 ## D-015 · Public repository, secrets protected from day one (2026-10-04)
 
 **Decision:** The repo is public (portfolio). No secret ever enters git.
-**How:** `.env` is git-ignored with a committed `.env.example`; a gitleaks pre-commit hook
+**How:** `.env*` files are git-ignored with a committed `app/.env.example`; a gitleaks pre-commit hook
 blocks secrets locally; a gitleaks CI job scans every push and PR; GitHub secret scanning
 with push protection is enabled on the repo.
 **Why:** A secret committed once stays in git history even after deletion. Prevention is the
@@ -152,3 +152,23 @@ protects data); the *service role* key bypasses RLS and must never leave the ser
 - Europe is the closest region to Israel (lower latency).
 - The GitHub integration would auto-deploy schema changes from the repo and gives Supabase
   access to it — to be decided together with the migration workflow.
+
+## D-017 · Frontend: React + TypeScript + Vite, as a browser-only PWA (2026-10-04)
+
+**Decision:** A single-page app (no server of our own), installed on phones as a PWA.
+Considered: Next.js.
+**Why:**
+- Next.js's main advantage is server-side code. All our security and sensitive logic already
+  lives in the database (RLS, triggers, functions), so there is nothing to run on a server.
+- Smaller, simpler project; free static hosting; a good target for Playwright.
+- TypeScript types can be generated from the database schema: if a column changes, the app
+  stops compiling until it is updated — bugs caught before any test runs.
+**Note:** The app is built and type-checked in CI on every push.
+
+## D-018 · Tests are written in Python (2026-10-04)
+
+**Decision:** E2E (Playwright for Python), API/security tests (supabase-py) and database tests
+are written in Python with pytest. Only unit tests of frontend code stay in TypeScript.
+**Why:** Tests exercise the system from the outside, like a user or an attacker, so they do not
+need to share the app's language. Python is the test owner's strongest language.
+**Trade-off:** Two toolchains in the repo and in CI (Node + Python) — common in real teams.

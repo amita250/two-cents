@@ -17,9 +17,9 @@ No bank connection: entry is manual, fast, and defaults do most of the work.
 | Layer | Choice |
 | --- | --- |
 | Backend | [Supabase](https://supabase.com) — Postgres, auth, Row Level Security |
-| Frontend | PWA (planned) |
-| Tests | Database security tests, API tests, Playwright E2E (planned) |
-| CI | GitHub Actions — secret scanning on every push |
+| Frontend | React + TypeScript + Vite, installed as a PWA |
+| Tests | Python + pytest: database, API/security and Playwright E2E tests (planned) |
+| CI | GitHub Actions — secret scanning and app build on every push |
 
 ## Security model
 
@@ -46,6 +46,7 @@ Every significant decision — and its trade-offs — is recorded in
 ## Project structure
 
 ```
+app/                   the web app (React + TypeScript)
 supabase/migrations/   database schema, RLS policies, functions
 docs/decisions.md      decision log
 .github/workflows/     CI
