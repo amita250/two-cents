@@ -1,10 +1,13 @@
 import { useState, type FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { Link, useNavigate, useSearchParams } from 'react-router'
 import { supabase } from '../lib/supabase'
 import { translateAuthError } from '../lib/auth-errors'
+import { safeNextPath, withNext } from '../lib/next-path'
 
 export default function SignUp() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const next = safeNextPath(searchParams.get('next'))
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -27,7 +30,9 @@ export default function SignUp() {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+      // `next` rides along in the confirmation link, so an invite survives even if the
+      // email opens in a different browser than the one that signed up (D-023).
+      options: { emailRedirectTo: `${window.location.origin}${withNext('/auth/callback', next)}` },
     })
 
     // "Already registered" must look identical to a fresh signup (D-022): otherwise
@@ -39,7 +44,7 @@ export default function SignUp() {
     }
 
     if (data.session) {
-      navigate('/', { replace: true })
+      navigate(next, { replace: true })
       return
     }
 
@@ -96,7 +101,7 @@ export default function SignUp() {
         {submitting ? 'נרשם...' : 'הרשמה'}
       </button>
       <p>
-        יש לך כבר חשבון? <Link to="/sign-in">התחברות</Link>
+        יש לך כבר חשבון? <Link to={withNext('/sign-in', next)}>התחברות</Link>
       </p>
     </form>
   )
