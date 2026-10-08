@@ -270,3 +270,21 @@ is a poor label. Invite errors other than "you're already in a couple" — inclu
 full" — show one generic message (D-013).
 **Trade-off:** One extra field on onboarding; currency must be changed later in settings for
 non-ILS couples.
+
+## D-025 · Feature branches and pull requests; merged with a merge commit (2026-10-08)
+
+**Decision:** `main` is production (Vercel deploys it) and changes only through pull requests.
+Each feature gets its own branch (`feature/<name>`, `fix/<name>`, `docs/<name>`), pushed to
+GitHub, opened as a PR, and merged by Amit on GitHub with a **merge commit**.
+Considered: committing straight to `main` (the setup until now); merging branches locally
+without a PR; squash and rebase merges.
+**Why:**
+- Nothing reaches production without a review point — CI (build + gitleaks) and a Vercel
+  preview deployment run on the PR before merge.
+- One PR per feature keeps the history readable and is the workflow a portfolio reviewer
+  expects.
+- Merge commits keep each commit exactly as authored, so Claude stays the author and Amit
+  the co-author (see CLAUDE.md). A squash merge would re-author everything to the PR opener.
+**Trade-off:** A few more steps per feature than pushing to `main`, and the history is not
+linear. Preview deployments need the preview Redirect URL in Supabase before auth flows work
+there.
