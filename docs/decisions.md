@@ -236,3 +236,55 @@ would itself leak the same information the hidden error message was supposed to 
 **Trade-off:** A user who already has an account and tries to sign up again sees "check
 your email" instead of a direct "you already have an account, sign in" hint — slightly
 less helpful UX, accepted for the security property.
+
+## D-023 · The invite code travels through sign-up inside the confirmation link (2026-10-08)
+
+**Decision:** A partner who opens `/invite/:code` without an account is sent to
+`/sign-up?next=/invite/:code`. Sign-up puts `next` into the email-confirmation redirect
+(`/auth/callback?next=...`), and the callback routes there after confirming. Sign-in honours
+the same `next`. Considered: keeping the code in browser storage only.
+**Why:**
+- The confirmation email often opens in a different browser than the one that signed up
+  (WhatsApp's in-app browser → mail app → default browser); browser storage would be lost
+  there, a URL is not.
+- `next` is attacker-controllable, so `safeNextPath` accepts only in-app paths (`/...`, not
+  `//host` or `/\host`) — otherwise it is an open redirect.
+- Fallback if `next` is lost anyway: `/welcome` accepts a pasted code *or* the full link.
+**Requires:** Supabase Auth → URL Configuration → Redirect URLs must include
+`https://two-cents-alpha.vercel.app/**` (and `http://localhost:5173/**` for local dev).
+Supabase silently falls back to the Site URL root for a non-allowed redirect, which would
+drop `next` without any error.
+**Trade-off:** The invite code ends up in the confirmation email and Supabase's auth logs.
+Accepted: codes are single use and expire in 48 hours (D-013).
+
+## D-024 · One-tap couple creation; display name asked once during onboarding (2026-10-08)
+
+**Decision:** "Create our home" calls `create_couple` with fixed defaults (name "הבית שלנו",
+currency ILS) — no form. Both onboarding screens (`/welcome`, `/invite/:code`) ask for a
+display name, prefilled with the current value (the email prefix by default), saved through
+the existing `profiles` update grant. Couple membership screens are guarded by `CoupleGate`
+(signed in + no couple → `/welcome`; signed in + couple → app).
+**Why:** Couple name and currency are rarely changed and can live in settings later; the
+display name, however, is what the partner sees as "who paid" (D-006), and an email prefix
+is a poor label. Invite errors other than "you're already in a couple" — including "couple is
+full" — show one generic message (D-013).
+**Trade-off:** One extra field on onboarding; currency must be changed later in settings for
+non-ILS couples.
+
+## D-025 · Feature branches and pull requests; merged with a merge commit (2026-10-08)
+
+**Decision:** `main` is production (Vercel deploys it) and changes only through pull requests.
+Each feature gets its own branch (`feature/<name>`, `fix/<name>`, `docs/<name>`), pushed to
+GitHub, opened as a PR, and merged by Amit on GitHub with a **merge commit**.
+Considered: committing straight to `main` (the setup until now); merging branches locally
+without a PR; squash and rebase merges.
+**Why:**
+- Nothing reaches production without a review point — CI (build + gitleaks) and a Vercel
+  preview deployment run on the PR before merge.
+- One PR per feature keeps the history readable and is the workflow a portfolio reviewer
+  expects.
+- Merge commits keep each commit exactly as authored, so Claude stays the author and Amit
+  the co-author (see CLAUDE.md). A squash merge would re-author everything to the PR opener.
+**Trade-off:** A few more steps per feature than pushing to `main`, and the history is not
+linear. Preview deployments need the preview Redirect URL in Supabase before auth flows work
+there.

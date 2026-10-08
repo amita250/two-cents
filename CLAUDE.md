@@ -28,6 +28,9 @@ portfolio project showing secure design and test automation.
   ```
   and end the message with `Co-Authored-By: Amit Amitay <amitamitay95@gmail.com>`.
   The goal is honest attribution: the history must show Claude wrote the code.
+- Work on a feature branch (`feature/<name>`, `fix/<name>`, `docs/<name>`), never commit
+  to `main` directly. Push the branch and open a PR; Amit reviews and merges on GitHub
+  with a **merge commit** (not squash — it would erase Claude's authorship). (D-025)
 - Never commit secrets. `.env*` is ignored; only `app/.env.example` is committed.
   gitleaks runs in pre-commit and CI.
 
@@ -56,14 +59,17 @@ portfolio project showing secure design and test automation.
   (`20261004000001_initial_schema.sql`) was applied manually via the Supabase SQL editor.
 - Keep the entry screen fast: amount + category should be the only required taps.
 
-## Status (2026-10-04)
+## Status (2026-10-08)
 
-Done: schema + RLS (applied to Supabase), decision log D-001…D-022, secret scanning, app
+Done: schema + RLS (applied to Supabase), decision log D-001…D-025, secret scanning, app
 skeleton, build CI, Vercel deployment, Supabase Auth Site URL set to the production URL,
 dependencies installed (`app/`, incl. `react-router`, D-021), `app/.env.local` filled in with
 real project credentials, sign-up / sign-in screens (D-019, routed with react-router D-021,
-enumeration-safe sign-up D-022) working end-to-end against the real Supabase project.
-Pending setup: add Redirect URLs in Supabase (previews `https://two-cents-*-amitamitay.vercel.app/**`,
-local `http://localhost:5173/**`) when needed; confirm GitHub push protection is enabled
-(Amit, repo Settings) before any real secret is handled.
-Next: create couple / invite partner (D-013) → expense entry screen → monthly list.
+enumeration-safe sign-up D-022) working end-to-end against the real Supabase project,
+create couple / invite partner / accept invite screens (D-023, D-024) verified end-to-end
+locally.
+Pending setup: add Redirect URLs in Supabase — required now for invites (D-023):
+production `https://two-cents-alpha.vercel.app/**` and local `http://localhost:5173/**`;
+previews `https://two-cents-*-amitamitay.vercel.app/**` when needed. Confirm GitHub push
+protection is enabled (Amit, repo Settings) before any real secret is handled.
+Next: expense entry screen → monthly list.

@@ -1,16 +1,37 @@
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router'
 import { supabase } from '../lib/supabase'
-import { useAuth } from '../lib/auth-context'
+import { useProfile } from '../lib/profile-context'
+import { fetchMembers, type Member } from '../lib/couple'
 
-// Placeholder landing screen for signed-in users.
-// Will be replaced by the create/join-couple flow.
+// Landing screen for a user with a couple. Will become the expense entry screen;
+// until the partner joins it prompts to invite them.
 export default function Home() {
-  const { session } = useAuth()
+  const { profile } = useProfile()
+  const [members, setMembers] = useState<Member[] | null>(null)
+
+  useEffect(() => {
+    fetchMembers().then(setMembers)
+  }, [])
+
+  if (!members) return null
+
+  const partner = members.find((member) => member.id !== profile?.id)
 
   return (
-    <div className="shell">
+    <div className="auth-form shell">
       <h1>TwoCents</h1>
-      <p>מחוברים בתור {session?.user.email}</p>
-      <button onClick={() => supabase?.auth.signOut()}>התנתקות</button>
+      <p>שלום {profile?.display_name}</p>
+      {partner ? (
+        <p>הבית המשותף שלך עם {partner.display_name}.</p>
+      ) : (
+        <Link className="button-link" to="/partner">
+          הזמנת בן/בת הזוג
+        </Link>
+      )}
+      <button type="button" className="secondary" onClick={() => supabase?.auth.signOut()}>
+        התנתקות
+      </button>
     </div>
   )
 }

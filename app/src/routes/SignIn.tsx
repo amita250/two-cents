@@ -1,10 +1,13 @@
 import { useState, type FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { Link, useNavigate, useSearchParams } from 'react-router'
 import { supabase } from '../lib/supabase'
 import { translateAuthError } from '../lib/auth-errors'
+import { safeNextPath, withNext } from '../lib/next-path'
 
 export default function SignIn() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const next = safeNextPath(searchParams.get('next'))
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -25,7 +28,7 @@ export default function SignIn() {
       return
     }
 
-    navigate('/', { replace: true })
+    navigate(next, { replace: true })
   }
 
   return (
@@ -56,7 +59,7 @@ export default function SignIn() {
         {submitting ? 'מתחבר...' : 'התחברות'}
       </button>
       <p>
-        אין לך חשבון? <Link to="/sign-up">הרשמה</Link>
+        אין לך חשבון? <Link to={withNext('/sign-up', next)}>הרשמה</Link>
       </p>
     </form>
   )
